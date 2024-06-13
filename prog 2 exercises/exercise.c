@@ -42,9 +42,7 @@ void display(int *arr){
     }while(!flag);
 }
 
-//splitting the array into odd and even
-//if those two array into  the same size add the contents of both the arrays to each other 
-//if not return an integer zero to the main function 
+
 
 int main(){
     int arr[8], sum; // odd or even or both integers printing function should be separated 
