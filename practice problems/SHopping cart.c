@@ -62,7 +62,7 @@ int main() {
     printf("Enter the new quantity for %s: ", name[index - 1]);
     scanf("%d", &newquantity);
 
-    updatestock(name, quantity, index, new_quantity);
+    updatestock(name, quantity, index, newquantity);
 
     // Display updated stock
     printf("\nUpdated Stock:\n");
