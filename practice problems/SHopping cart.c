@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define MAX_CART_ITEMS 100
 
@@ -32,23 +33,27 @@ void changeprice(char name[][50], float price[], int size, int index, float newp
     }
 }
 
-// Function to add item to cart
-void addToCart(char name[][50], int cartQuantity[], float cartPrice[], int *cartSize, char itemName[], int quantity, float price) {
-    for (int i = 0; i < *cartSize; i++) {
-        if (strcmp(name[i], itemName) == 0) {
-            cartQuantity[i] += quantity;
-            printf("Increased quantity of %s to %d.\n", itemName, cartQuantity[i]);
+// Function to add multiple items to the cart
+void addMultipleToCart(char name[][50], int cartQuantity[], float cartPrice[], int *cartSize, char itemNames[][50], int quantities[], float prices[], int numItems) {
+    for (int i = 0; i < numItems; i++) {
+        for (int j = 0; j < *cartSize; j++) {
+            if (strcmp(name[j], itemNames[i]) == 0) {
+                cartQuantity[j] += quantities[i];
+                printf("Increased quantity of %s to %d.\n", itemNames[i], cartQuantity[j]);
+                goto nextItem;
+            }
+        }
+        if (*cartSize < MAX_CART_ITEMS) {
+            strcpy(name[*cartSize], itemNames[i]);
+            cartQuantity[*cartSize] = quantities[i];
+            cartPrice[*cartSize] = prices[i];
+            (*cartSize)++;
+            printf("Added %d of %s to the cart.\n", quantities[i], itemNames[i]);
+        } else {
+            printf("Cart is full. Cannot add more items.\n");
             return;
         }
-    }
-    if (*cartSize < MAX_CART_ITEMS) {
-        strcpy(name[*cartSize], itemName);
-        cartQuantity[*cartSize] = quantity;
-        cartPrice[*cartSize] = price;
-        (*cartSize)++;
-        printf("Added %d of %s to the cart.\n", quantity, itemName);
-    } else {
-        printf("Cart is full. Cannot add more items.\n");
+        nextItem:;
     }
 }
 
@@ -124,10 +129,15 @@ int main() {
     float price[] = {12.00, 25.00, 20.00, 15.00, 8.00};
     int size = sizeof(quantity) / sizeof(quantity[0]);
 
-    char cartName[MAX_CART_ITEMS][50];
-    int cartQuantity[MAX_CART_ITEMS];
-    float cartPrice[MAX_CART_ITEMS];
+    char (*cartName)[50] = malloc(MAX_CART_ITEMS * sizeof(*cartName));
+    int *cartQuantity = malloc(MAX_CART_ITEMS * sizeof(int));
+    float *cartPrice = malloc(MAX_CART_ITEMS * sizeof(float));
     int cartSize = 0;
+
+    if (!cartName || !cartQuantity || !cartPrice) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
 
     char choice;
     printf("Do you want to display the stock? (y/n): ");
@@ -165,17 +175,31 @@ int main() {
     printf("\nUpdated Stock:\n");
     displaystock(name, quantity, price, size);
 
-    // Adding items to the cart
-    int cartIndex, cartQuantityInput;
-    printf("\nEnter the index of the item you want to add to the cart: ");
-    scanf("%d", &cartIndex);
-    if (cartIndex >= 1 && cartIndex <= size) {
-        printf("Enter the quantity for %s to add to the cart: ", name[cartIndex - 1]);
-        scanf("%d", &cartQuantityInput);
-        addToCart(cartName, cartQuantity, cartPrice, &cartSize, name[cartIndex - 1], cartQuantityInput, price[cartIndex - 1]);
-    } else {
-        printf("Invalid index.\n");
+    // Adding multiple items to the cart
+    int numItems;
+    printf("\nHow many different items do you want to add to the cart? ");
+    scanf("%d", &numItems);
+
+    char itemNames[numItems][50];
+    int quantities[numItems];
+    float prices[numItems];
+
+    for (int i = 0; i < numItems; i++) {
+        int cartIndex;
+        printf("\nEnter the index of the item you want to add to the cart: ");
+        scanf("%d", &cartIndex);
+        if (cartIndex >= 1 && cartIndex <= size) {
+            printf("Enter the quantity for %s to add to the cart: ", name[cartIndex - 1]);
+            scanf("%d", &quantities[i]);
+            strcpy(itemNames[i], name[cartIndex - 1]);
+            prices[i] = price[cartIndex - 1];
+        } else {
+            printf("Invalid index. Skipping this item.\n");
+            i--; // Repeat this iteration
+        }
     }
+
+    addMultipleToCart(cartName, cartQuantity, cartPrice, &cartSize, itemNames, quantities, prices, numItems);
 
     // View cart contents
     viewCart(cartName, cartQuantity, cartPrice, cartSize);
@@ -200,12 +224,13 @@ int main() {
     if (choice == 'y' || choice == 'Y') {
         checkout(name, quantity, &size, cartQuantity, cartPrice, &cartSize);
     } else {
-        printf("Checkout cancelled.\n");
+        printf("Checkout not done.\n");
     }
 
-    // Display final stock after checkout
-    printf("\nFinal Stock:\n");
-    displaystock(name, quantity, price, size);
+    // Free allocated memory
+    free(cartName);
+    free(cartQuantity);
+    free(cartPrice);
 
     return 0;
 }
