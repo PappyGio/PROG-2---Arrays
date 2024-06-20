@@ -1,3 +1,33 @@
+/*Make an array that accepts 10 integer inputs of 0 to 5 
+
+in the first occurence of 3, make a new array that only 
+has the values of 3 and below 
+
+Example output
+
+2 3 2 1 2 3 3 4 1 5
+3 2 1 2 3 3 1
+3 1   ----------->>>>> unique
+3 1 1 3 ------->>>>>>> palindrome
+1 1 3 3 ------->>>>>> sort
+
+new test case 
+
+1 2 1 2 5 4 4 5 1 3
+This should have only 1 integer output for all functions.
+
+==========NEW UPDATE=======
+
+STILL gonna update/optimize it later
+
+*/
+
+
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
