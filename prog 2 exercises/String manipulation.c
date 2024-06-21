@@ -57,6 +57,7 @@ void Alphabetical(char* fname, char* lname, char* mname){ // function to print t
 
     char *names[] = {fname, lname, mname};
     char *temp;
+    //bubble sort
     for(int i = 0; i < 2; i++){
         for(int j = i + 1; j < 3; j++){
             if(strcasecmp(names[i], names[j]) > 0){
@@ -97,7 +98,11 @@ void compress(char str[], char compressed[]){
 
 
 //Function to compress a string 
-void sortcompressstring(char str[], char compre)
+void sortcompressstring(char str[], char compressed[]){
+//Sort the characters in the string 
+sortstring(str);
+compress(str, compressed);
+}
 
 
 int main(){
@@ -115,8 +120,23 @@ int main(){
     printf("Enter your middle name: ");
     scanf("%s", mname);
 
-
-    Alphabetical(fname,lname, mname);
+      Alphabetical(fname,lname, mname);
    sortcharacters(fname, lname, mname);
 
+
+
+    //Input the string to compress
+    printf("Enter a string to compress: ");
+    char str[100];
+    scanf("%99s", str);
+
+    //Compress the string
+    compress(str, compressed);
+    printf("Compressed string: %s\n", compressed);
+
+
+    //Sort and compress the stirng 
+    sortcompressstring(str, compressed);
+    printf("Sorted and compressed string: %s\n", compressed);
     return 0;
+}
