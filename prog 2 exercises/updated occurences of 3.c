@@ -87,6 +87,12 @@ void findUnique(int* arr2) {
 }
 
 void palindrome(int* arr) {
+
+ if (arr[0] == 1) {
+        display(arr);
+        return;
+    }
+    
     int size = arr[0] * 2;
     int* newArr = (int*)malloc(size * sizeof(int));
     if (newArr == NULL) {
