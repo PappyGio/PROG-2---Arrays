@@ -23,145 +23,134 @@ STILL gonna update/optimize it later
 */
 
 
-#include <stdio.h>       
-#include <stdlib.h>     
-#include <string.h>    
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Function to display the elements of an array
 void display(int* arr) {
-    for(int i = 1; i <= arr[0]; i++) {   // -------------> Loop through the array starting from index 1 to the size of the array
-        printf("%d ", arr[i]);           
+    for(int i = 1; i <= arr[0]; i++) {  // Iterate from 1 to the size of the array (arr[0])
+        printf("%d ", arr[i]);          // Print each element of the array followed by a space
     }
-    printf("\n");                        
+    printf("\n");                      // Move to the next line after printing all elements
 }
 
-// Function to find the first occurrence of the number 3 and elements after it
 void firstOccurence(int* arr1, int* newArr) {
-    int count = 1, temp = 0;             //-----------------> Initialize count for new array and temporary variable for index
+    int count = 1, temp = 0;           // Initialize count and temp variables
 
-    newArr[0] = arr1[0];                 //-----------------> Set the initial size of newArr to be the same as arr1
+    newArr[0] = arr1[0];               // Set the first element of newArr to the size of arr1
 
-    // Loop to find the first occurrence of 3
-    for(int i = 1; i <= arr1[0]; i++) {
-        if (arr1[i] == 3) {              //----------------> Check if the current element is 3
-            temp = i;                    //----------------> Store the index of the first occurrence of 3
-            break;                       // ---------------> Exit the loop once 3 is found
+    for(int i = 1; i <= arr1[0]; i++) {  // Iterate through arr1
+        if (arr1[i] == 3) {             // Find the first occurrence of the number 3
+            temp = i;                   // Store its index in temp
+            break;                      // Exit the loop once found
         }
     }
-
-    // Loop to copy elements from the first occurrence of 3 and after
-    for(int i = temp; i <= arr1[0]; i++) {
-        if (arr1[i] <= 3) {              //--------------> Check if the current element is less than or equal to 3
-            newArr[count++] = arr1[i];   //--------------> Copy the element to newArr and increment the count
+    for(int i = temp; i <= arr1[0]; i++) {  // Continue from temp to the end of arr1
+        if (arr1[i] <= 3) {            // Copy elements less than or equal to 3 to newArr
+            newArr[count++] = arr1[i]; // Increment count and assign the element to newArr
         }
     }
-    newArr[0] = count - 1;               //--------------> Update the size of newArr
-    newArr = (int *)realloc(newArr, count * sizeof(int)); //---------------> Reallocate memory for newArr based on the new size
-    display(newArr);                     //------------------> Display the new array
+    newArr[0] = count - 1;             // Set newArr size to count minus one (excluding the first element)
+    newArr = (int *)realloc(newArr, count * sizeof(int));  // Resize newArr based on count
+    display(newArr);                   // Display the modified newArr
 }
 
-// Function to find unique elements in an array
 void findUnique(int* arr2) {
-    int count = 1;                       //---------------> Initialize count for the new unique array
-    int* arr = (int*)malloc(sizeof(int) * arr2[0]); //-----------------> Allocate memory for a temporary array to hold unique elements
-    arr[0] = arr2[0];                    //---------------> Set the initial size of the temporary array
+    int count = 1;                     // Initialize count to 1 (start from the first element)
+    int* arr = (int*)malloc(sizeof(int) * arr2[0]);  // Allocate memory for arr based on arr2 size
+    arr[0] = arr2[0];                  // Set the first element of arr to the size of arr2
 
-    // Loop to find unique elements
-    for (int i = 1; i <= arr2[0]; i++) {
-        int isUnique = 1;                //------------> Flag to check if the current element is unique
-        for (int j = 1; j < i; j++) {
-            if (arr2[i] == arr2[j]) {    //-------------> Check if the current element has appeared before
-                isUnique = 0;            //-------------> Set the flag to 0 if the element is not unique
-                break;                   //-------------> Exit the inner loop
+    for (int i = 1; i <= arr2[0]; i++) {  // Iterate through arr2
+        int isUnique = 1;              // Assume the current element is unique
+        for (int j = 1; j < i; j++) {  // Compare current element with previous elements
+            if (arr2[i] == arr2[j]) {  // If duplicate is found
+                isUnique = 0;          // Mark as not unique
+                break;                 // Exit the loop
             }
         }
-        if (isUnique) {                  //-------------> If the element is unique
-            arr[count++] = arr2[i];      //-------------> Copy the element to the temporary array and increment the count
+        if (isUnique) {                // If the element is unique
+            arr[count++] = arr2[i];    // Add it to arr and increment count
         }
     }
-    arr2[0] = count - 1;                 //-------------> Update the size of arr2 to reflect the number of unique elements
-    arr2 = (int*)realloc(arr2, count * sizeof(int)); //--------------> Reallocate memory for arr2 based on the new size
-    for (int i = 1; i <= arr2[0]; i++) {
-        arr2[i] = arr[i];                //-----------> Copy unique elements from the temporary array back to arr2
+    arr2[0] = count - 1;              // Set arr2 size to count minus one (excluding the first element)
+    arr2 = (int*)realloc(arr2, count * sizeof(int));  // Resize arr2 based on count
+    for (int i = 1; i <= arr2[0]; i++) {  // Copy elements from arr to arr2
+        arr2[i] = arr[i];             // Assign each element from arr to arr2
     }
-    display(arr2);                       //-----------> Display the array with unique elements
-    free(arr);                           //-----------> Free the memory allocated for the temporary array
+    display(arr2);                    // Display the modified arr2
+    free(arr);                        // Free the memory allocated for arr
 }
 
-// Function to create a palindrome array
 void palindrome(int* arr) {
-    int size = arr[0] * 2;               //--------> Calculate the new size for the palindrome array
-    int* newArr = (int*)malloc(size * sizeof(int)); //----------> Allocate memory for the palindrome array
-    if (newArr == NULL) {                //------------> Check if memory allocation failed
-        printf("Memory allocation failed\n");
-        return;
+    if (arr[0] == 1) {                // If the size of arr is 1
+        display(arr);                 // Display the array as it is (already a palindrome)
+        return;                       // Exit the function
     }
 
-    int j = 1;                           //--------------> Initialize index for the new array
-    // Copy original elements to the new array
-    for (int i = 1; i <= arr[0]; i++) {
-        newArr[j++] = arr[i];
-    }
-    // Append reversed elements to the new array
-    for (int i = arr[0]; i > 0; i--) {
-        newArr[j++] = arr[i];
+    int size = arr[0] * 2;            // Calculate the size needed for the palindrome
+    int* newArr = (int*)malloc(size * sizeof(int));  // Allocate memory for the new array
+    if (newArr == NULL) {             // If memory allocation fails
+        printf("Memory allocation failed\n");  // Print error message
+        return;                       // Exit the function
     }
 
-    arr[0] = size;                       //-------------> Update the original array size
-    arr = (int*)realloc(arr, (size + 1) * sizeof(int)); //---------------> Reallocate memory for the original array
-    if (arr == NULL) {                   // Check if memory reallocation failed
-        printf("Memory reallocation failed\n");
-        free(newArr);                    //----------> Free the new array memory
-        return;
+    int j = 1;                        // Initialize index variable for newArr
+    for (int i = 1; i <= arr[0]; i++) {  // Copy elements of arr to newArr
+        newArr[j++] = arr[i];         // Append elements in order
+    }
+    for (int i = arr[0]; i > 0; i--) {  // Copy elements of arr in reverse order to newArr
+        newArr[j++] = arr[i];         // Append elements in reverse order
     }
 
-    // Copy palindrome elements back to the original array
-    for (int i = 1; i <= size; i++) {
-        arr[i] = newArr[i];
+    arr[0] = size;                    // Update arr size to the palindrome size
+    arr = (int*)realloc(arr, (size + 1) * sizeof(int));  // Resize arr based on the palindrome size
+    if (arr == NULL) {                // If memory reallocation fails
+        printf("Memory reallocation failed\n");  // Print error message
+        free(newArr);                 // Free memory allocated for newArr
+        return;                       // Exit the function
     }
 
-    display(arr);                        //-----------> Display the palindrome array
-    free(newArr);                        //-----------> Free the memory allocated for the palindrome array
+    for (int i = 1; i <= size; i++) {  // Copy elements from newArr to arr
+        arr[i] = newArr[i];           // Assign each element from newArr to arr
+    }
+
+    display(arr);                     // Display the modified arr (palindrome)
+    free(newArr);                     // Free memory allocated for newArr
 }
 
-// Function to sort an array using bubble sort
 void sort(int* arr) {
-    int temp = 0;                        //-----------> Temporary variable for swapping
-    // Bubble sort algorithm
-    for (int i = 1; i <= arr[0]; i++) {
-        for (int j = i + 1; j <= arr[0]; j++) {
-            if (arr[i] > arr[j]) {       //-------------> If the current element is greater than the next element
-                temp = arr[i];           //-------------> Swap the elements
+    int temp = 0;                     // Initialize temporary variable for swapping
+    for (int i = 1; i <= arr[0]; i++) {  // Iterate through the array
+        for (int j = i + 1; j <= arr[0]; j++) {  // Compare current element with the rest
+            if (arr[i] > arr[j]) {    // If current element is greater than the next
+                temp = arr[i];        // Swap elements
                 arr[i] = arr[j];
                 arr[j] = temp;
             }
         }
     }
-    display(arr);                        //-------------> Display the sorted array
+    display(arr);                     // Display the sorted array
 }
 
 int main() {
-    int arr1[11];                        
-    arr1[0] = 10;                       
-    int* arr2 = (int*)malloc(sizeof(int) * (arr1[0] + 1)); //-------------> Allocate memory for another array arr2
+    int arr1[11];                     // Declare array arr1 with size 11
+    arr1[0] = 10;                     // Set the first element of arr1 to 10 (number of elements)
 
-    // Get elements from the user
-    for (int i = 1; i <= arr1[0]; i++) {
-        printf("Enter your element %d for the array: ", i);
-        scanf("%d", &arr1[i]);           //----------------> Read element from user and store in arr1
+    for (int i = 1; i <= arr1[0]; i++) {  // Iterate through arr1 elements
+        printf("Enter your element %d for the array: ", i);  
+        scanf("%d", &arr1[i]);         // Read integer input and store in arr1
     }
 
-    // Perform various operations on the array
-    printf("First Occurrences of 3 and after: ");
-    firstOccurence(arr1, arr2);          //------------> Find and display first occurrences of 3 and elements after it
-    printf("Unique Numbers: ");
-    findUnique(arr2);                    //-----------> Find and display unique elements
-    printf("The palindrome: ");
-    palindrome(arr2);                    //-----------> Create and display a palindrome array
-    printf("Bubble sort: ");
-    sort(arr2);                          //-----------> Sort and display the array
+    int* arr2 = (int*)malloc(sizeof(int) * (arr1[0] + 1));  // Allocate memory for arr2 based on arr1 size
 
-    free(arr2);                          // ----------> Free the allocated memory for arr2
-    return 0;                            // Return 0 to indicate successful execution
-}
+    printf("First Occurrences of 3 and after: ");  // 
+    firstOccurence(arr1, arr2);       // Call function to find first occurrences and display results
+    printf("Unique Numbers: ");       // 
+    findUnique(arr2);                 // Call function to find unique numbers and display results
+    printf("The palindrome: ");       // 
+    palindrome(arr2);                 // Call function to create palindrome and display results
+    printf("Bubble sort: ");          //
+    sort(arr2);                       // Call function to sort array and display results
 
+    free(arr2);                       // Free memory allocated for arr2
+    return 0;                         // 
